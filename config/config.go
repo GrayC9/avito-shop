@@ -27,6 +27,5 @@ func InitDB() {
 
 	fmt.Println("✅ Успешное подключение к БД!")
 
-	// Запускаем миграции, передаем DB как аргумент
 	migrations.Migrate(DB)
 }
