@@ -142,3 +142,13 @@ func RevokeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(resp)
 }
+
+func TokenIdentify(t string) (int, error) {
+	var token models.Token
+	result := config.DB.Select("user_id").Where("token = ? and expired_at > ?", t, time.Now()).First(&token)
+	if result.Error != nil {
+		return -1, result.Error
+	}
+
+	return token.UserID, nil
+}

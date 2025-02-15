@@ -14,4 +14,5 @@ func RegisterRoutes(mux *http.ServeMux) {
 	//mux.HandleFunc("/revoke", handlers.RevokeHandler)
 
 	mux.HandleFunc("/api/buy/", handlers.BuyMerchHandler)
+	mux.HandleFunc("/api/sendCoin", handlers.SendCoinsHandler)
 }
