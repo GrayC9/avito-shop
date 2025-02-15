@@ -10,8 +10,7 @@ func RegisterRoutes(mux *http.ServeMux) {
 		w.Write([]byte(`{"message": "pong"}`))
 	})
 
-	mux.HandleFunc("/register", handlers.RegisterHandler)
-	mux.HandleFunc("/token", handlers.TokenHandler)
+	mux.HandleFunc("/api/auth", handlers.TokenHandler)
 	//mux.HandleFunc("/revoke", handlers.RevokeHandler)
 
 	mux.HandleFunc("/api/buy/", handlers.BuyMerchHandler)
