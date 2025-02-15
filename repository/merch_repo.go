@@ -12,8 +12,8 @@ func CreateMerch(name string, price int) error {
 	return config.DB.Create(&merch).Error
 }
 
-func GetMerchByName(name string) (models.Merch, error) {
-	var merch models.Merch
+func GetMerchByName(name string) (*models.Merch, error) {
+	var merch *models.Merch
 	err := config.DB.Where("name = ?", name).First(&merch).Error
 
 	if err != nil {
@@ -24,4 +24,8 @@ func GetMerchByName(name string) (models.Merch, error) {
 	}
 
 	return merch, nil
+}
+
+func BuyMerch(user *models.Merch, merch *models.Merch) error {
+	return nil
 }

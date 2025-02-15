@@ -13,6 +13,6 @@ func RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/api/auth", handlers.TokenHandler)
 	//mux.HandleFunc("/revoke", handlers.RevokeHandler)
 
-	mux.HandleFunc("/api/buy/", handlers.BuyMerchHandler)
+	mux.HandleFunc("/api/buy/{item}", handlers.BuyMerchHandler)
 	mux.HandleFunc("/api/sendCoin", handlers.SendCoinsHandler)
 }

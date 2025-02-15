@@ -33,10 +33,6 @@ func UserAuthz(w http.ResponseWriter, r *http.Request) (*models.User, error) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return nil, err
 	}
-	//if user.UserID == userID {
-	//	w.WriteHeader(http.StatusUnauthorized)
-	//	return nil, err
-	//}
 
 	return &user, nil
 }

@@ -37,6 +37,7 @@ func Migrate(db *gorm.DB) {
 		&models.Transaction{},
 		&models.UserStatus{},
 		&models.Token{},
+		&models.MerchUser{},
 	)
 	if err != nil {
 		fmt.Println("❌ Ошибка миграции:", err)
@@ -45,4 +46,24 @@ func Migrate(db *gorm.DB) {
 	}
 	InitUserStatuses(db)
 	InitShopUser(db)
+	InitMerch(db)
+}
+
+func InitMerch(db *gorm.DB) {
+	merches := []models.Merch{
+		{Name: "t-shirt", Price: 80},
+		{Name: "cup", Price: 20},
+		{Name: "book", Price: 50},
+		{Name: "pen", Price: 10},
+		{Name: "powerbank", Price: 200},
+		{Name: "hoody", Price: 300},
+		{Name: "umbrella", Price: 200},
+		{Name: "socks", Price: 10},
+		{Name: "wallet", Price: 50},
+		{Name: "pink-hoody", Price: 500},
+	}
+
+	for _, merch := range merches {
+		db.FirstOrCreate(&merch, models.Merch{Name: merch.Name})
+	}
 }

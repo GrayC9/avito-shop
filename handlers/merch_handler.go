@@ -1,7 +1,11 @@
 package handlers
 
 import (
+	"avito-shop/models"
+	"avito-shop/repository"
+	"fmt"
 	"net/http"
+	"strings"
 )
 
 type BuyRequest struct {
@@ -9,44 +13,45 @@ type BuyRequest struct {
 	MerchName string `json:"merch"`
 }
 
+var merchant = &models.User{UserID: 7, Login: "shop"}
+
 func BuyMerchHandler(w http.ResponseWriter, r *http.Request) {
-	//var req BuyRequest
-	//if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-	//	http.Error(w, `{"error": "Неверный формат запроса"}`, http.StatusBadRequest)
-	//	return
-	//}
-	//
-	//user, err := repository.GetUserByName(req.UserName)
-	//if err != nil {
-	//	http.Error(w, `{"error": "Пользователь не найден"}`, http.StatusBadRequest)
-	//	return
-	//}
-	//
-	//merch, err := repository.GetMerchByName(req.MerchName)
-	//if err != nil {
-	//	http.Error(w, `{"error": "`+err.Error()+`"}`, http.StatusBadRequest)
-	//	return
-	//}
-	//
-	//if user.Coins < merch.Price {
-	//	http.Error(w, `{"error": "Недостаточно монет для покупки"}`, http.StatusBadRequest)
-	//	return
-	//}
-	//
-	//err = repository.BuyMerch(req.UserName, req.MerchName)
-	//if err != nil {
-	//	http.Error(w, `{"error": "`+err.Error()+`"}`, http.StatusBadRequest)
-	//	return
-	//}
-	//
-	//newBalance := user.Coins - merch.Price
-	//err = repository.UpdateUserCoins(req.UserName, newBalance)
-	//if err != nil {
-	//	http.Error(w, `{"error": "Не удалось обновить баланс"}`, http.StatusInternalServerError)
-	//	return
-	//}
-	//
-	//w.Header().Set("Content-Type", "application/json")
-	//w.WriteHeader(http.StatusOK)
-	//w.Write([]byte(`{"message": "Покупка успешна"}`))
+	// Проверить запрос
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Авторизовать пользователя
+	user, err := UserAuthz(w, r)
+	if err != nil {
+		return
+	}
+
+	requestedItem := strings.TrimPrefix(r.URL.Path, "/api/buy/")
+	merch, err := repository.GetMerchByName(requestedItem)
+	if err != nil {
+		http.Error(w, `{"error": "Некорректный тип товара"}`, http.StatusBadRequest)
+		return
+	}
+
+	if user.Coins < merch.Price {
+		http.Error(w, `{"error": "Недостаточно средств"}`, http.StatusPaymentRequired)
+		return
+	}
+
+	err = repository.TransferCoins(user, merchant, merch.Price)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	_, err = repository.AccountMerchToUser(user, merch)
+	if err != nil {
+
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"message": "Покупка успешна"}`))
 }
