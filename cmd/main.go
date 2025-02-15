@@ -2,7 +2,6 @@ package main
 
 import (
 	"avito-shop/config"
-	"avito-shop/migrations"
 	"avito-shop/routes"
 	"fmt"
 	"log"
@@ -11,8 +10,6 @@ import (
 
 func main() {
 	config.InitDB()
-
-	migrations.Migrate(config.DB)
 
 	mux := http.NewServeMux()
 	routes.RegisterRoutes(mux)

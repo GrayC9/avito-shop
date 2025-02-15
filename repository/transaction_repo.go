@@ -1,6 +1,7 @@
 package repository
 
 func BuyMerch(userName string, merchName string) error {
+	return nil
 	//db := config.DB
 	//
 	//var user models.User

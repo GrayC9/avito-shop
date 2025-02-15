@@ -4,6 +4,7 @@ import (
 	"avito-shop/models"
 	"fmt"
 	"gorm.io/gorm"
+	"time"
 )
 
 func InitUserStatuses(db *gorm.DB) {
@@ -16,6 +17,17 @@ func InitUserStatuses(db *gorm.DB) {
 	for _, status := range statuses {
 		db.FirstOrCreate(&status, models.UserStatus{UserStatusID: status.UserStatusID})
 	}
+}
+
+func InitShopUser(db *gorm.DB) {
+	shopUser := models.User{
+		Login:     "shop",
+		Password:  "123",
+		CreatedAt: time.Now(),
+		StatusID:  2,
+	}
+
+	db.FirstOrCreate(&shopUser, models.User{Login: "shop"})
 }
 
 func Migrate(db *gorm.DB) {
@@ -32,4 +44,5 @@ func Migrate(db *gorm.DB) {
 		fmt.Println("✅ База данных успешно мигрирована!")
 	}
 	InitUserStatuses(db)
+	InitShopUser(db)
 }
