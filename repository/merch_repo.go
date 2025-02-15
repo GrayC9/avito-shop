@@ -3,9 +3,21 @@ package repository
 import (
 	"avito-shop/config"
 	"avito-shop/models"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
+
+func AccountMerchToUser(user *models.User, merch *models.Merch) error {
+	purchase := models.Purchase{
+		UserID:  user.UserID,
+		MerchID: merch.MerchID,
+	}
+	if err := config.DB.Create(&purchase).Error; err != nil {
+		return errors.New("failed to record purchase")
+	}
+	return nil
+}
 
 func CreateMerch(name string, price int) error {
 	merch := models.Merch{Name: name, Price: price}

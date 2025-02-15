@@ -66,4 +66,5 @@ func InitMerch(db *gorm.DB) {
 	for _, merch := range merches {
 		db.FirstOrCreate(&merch, models.Merch{Name: merch.Name})
 	}
+
 }

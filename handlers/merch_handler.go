@@ -13,7 +13,7 @@ type BuyRequest struct {
 	MerchName string `json:"merch"`
 }
 
-var merchant = &models.User{UserID: 7, Login: "shop"}
+var merchant = &models.User{UserID: 6, Login: "shop"}
 
 func BuyMerchHandler(w http.ResponseWriter, r *http.Request) {
 	// Проверить запрос

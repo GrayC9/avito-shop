@@ -8,6 +8,19 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+func GetUserInventory(userID int) ([]models.Merch, error) {
+	var inventory []models.Merch
+
+	err := config.DB.Raw(`
+		SELECT merch.*
+		FROM merch_user
+		JOIN merch ON merch_user.merch_id = merch.merch_id
+		WHERE merch_user.user_id = ?
+	`, userID).Scan(&inventory).Error
+
+	return inventory, err
+}
+
 func CreateUser(login string) error {
 	user := models.User{Login: login, Coins: 1000}
 	return config.DB.Create(&user).Error
@@ -71,4 +84,5 @@ func TransferCoins(userFrom *models.User, userTo *models.User, amount int) error
 
 		return nil
 	})
+
 }

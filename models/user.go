@@ -3,12 +3,12 @@ package models
 import "time"
 
 type User struct {
-	UserID    int       `gorm:"column:user_id;primaryKey;autoIncrement"`
+	UserID    uint      `gorm:"column:user_id;primaryKey;autoIncrement"`
 	Login     string    `gorm:"column:login;type:text;not null"`
-	Coins     int       `gorm:"column:coins;type:int;not null"`
+	Coins     int       `gorm:"column:coins;type:int;not null;default:1000"`
 	Password  string    `gorm:"column:password;type:text;not null"`
 	CreatedAt time.Time `gorm:"column:created_at;type:date;not null"`
-	StatusID  int       `gorm:"column:status_id"`
+	StatusID  uint      `gorm:"column:status_id"`
 }
 
 func (User) TableName() string {
@@ -34,4 +34,15 @@ type Token struct {
 
 func (Token) TableName() string {
 	return "tokens"
+}
+
+type Purchase struct {
+	PurchaseID uint      `gorm:"column:purchase_id;primaryKey;autoIncrement"`
+	UserID     uint      `gorm:"column:user_id;not null"`
+	MerchID    uint      `gorm:"column:merch_id;not null"`
+	CreatedAt  time.Time `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP"`
+}
+
+func (Purchase) TableName() string {
+	return "purchases"
 }

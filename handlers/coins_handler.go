@@ -38,13 +38,11 @@ func UserAuthz(w http.ResponseWriter, r *http.Request) (*models.User, error) {
 }
 
 func SendCoinsHandler(w http.ResponseWriter, r *http.Request) {
-	// Проверить запрос
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// Авторизовать пользователя
 	userFrom, err := UserAuthz(w, r)
 	// Нужно что-то в логи писать, если не авторизован юзер? По идее нет, потому что это базовое поведение
 	// Было бы хорошо сюда воткнуть метрику прометея для дальнейшего мониторинга, но пока оставим тело условия пустым.
@@ -52,7 +50,6 @@ func SendCoinsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Спарсить тело запроса и опредеелить получателя
 	var req SendCoinRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, `{"error": "Некорректное тело запроса"}`, http.StatusBadRequest)
@@ -65,14 +62,12 @@ func SendCoinsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Отправить монеты
 	err = repository.TransferCoins(userFrom, userTo, req.Amount)
 	if err != nil {
 		http.Error(w, fmt.Sprintf(`{"error": "%s"}`, err.Error()), http.StatusPaymentRequired)
 		return
 	}
 
-	// Совершить транзакцию
 	w.Header().Set("Content-Type", "application/json")
 	_, err = fmt.Fprintf(w, "Coins moved")
 	if err != nil {
