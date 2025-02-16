@@ -26,7 +26,7 @@ docker compose up app —build
 ```
 
 ### Docker-compose.yml
-```
+```sh
 version: '3.8'
 
 services:
@@ -62,3 +62,8 @@ services:
 volumes:
   pg_data2:
 ```
+### Запуск тестов
+```sh
+ go test ./...  
+```
+
