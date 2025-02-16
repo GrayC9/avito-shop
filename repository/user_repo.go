@@ -11,19 +11,11 @@ import (
 func GetUserInventory(userID int) ([]models.Merch, error) {
 	var inventory []models.Merch
 
-	err := config.DB.Raw(`
-		SELECT merch.*
-		FROM merch_user
-		JOIN merch ON merch_user.merch_id = merch.merch_id
-		WHERE merch_user.user_id = ?
-	`, userID).Scan(&inventory).Error
+	err := config.DB.Model(&models.Merch{}).
+		Joins("LEFT JOIN purchases p ON p.merch_id = merch.merch_id").
+		Where("user_id = ?", userID).Find(&inventory).Error
 
 	return inventory, err
-}
-
-func CreateUser(login string) error {
-	user := models.User{Login: login, Coins: 1000}
-	return config.DB.Create(&user).Error
 }
 
 func GetUserByLogin(login string) (*models.User, error) {
@@ -36,10 +28,6 @@ func GetUserById(id int) (models.User, error) {
 	var user models.User
 	err := config.DB.Where("user_id = ? and status_id = 1", id).First(&user).Error
 	return user, err
-}
-
-func UpdateUserCoins(user *models.User, newCoins int) error {
-	return config.DB.Model(&models.User{}).Where("login = ?", user.Login).Update("coins", newCoins).Error
 }
 
 func GetUserBalance(user *models.User) (int, error) {
@@ -79,6 +67,16 @@ func TransferCoins(userFrom *models.User, userTo *models.User, amount int) error
 
 		if err := tx.Model(&userTo).
 			Update("coins", userTo.Coins+amount).Error; err != nil {
+			return err
+		}
+
+		tr := &models.Transaction{
+			FromUserID: int(userFrom.UserID),
+			ToUserID:   int(userTo.UserID),
+			Amount:     amount,
+		}
+
+		if err := tx.Model(tr).Save(tr).Error; err != nil {
 			return err
 		}
 

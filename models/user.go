@@ -26,7 +26,7 @@ func (UserStatus) TableName() string {
 
 type Token struct {
 	TokenID   int       `gorm:"column:token_id;primaryKey;autoIncrement"`
-	UserID    int       `gorm:"column:user_id;not null"` // Ссылается на пользователя
+	UserID    int       `gorm:"column:user_id;not null"`
 	Token     string    `gorm:"column:token;type:text;not null"`
 	CreatedAt time.Time `gorm:"column:created_at;type:timestamp;default:CURRENT_TIMESTAMP"`
 	ExpiredAt time.Time `gorm:"column:expired_at;type:timestamp"`

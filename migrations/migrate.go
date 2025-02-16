@@ -38,6 +38,7 @@ func Migrate(db *gorm.DB) {
 		&models.UserStatus{},
 		&models.Token{},
 		&models.MerchUser{},
+		&models.Purchase{},
 	)
 	if err != nil {
 		fmt.Println("❌ Ошибка миграции:", err)

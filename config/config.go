@@ -12,7 +12,7 @@ var DB *gorm.DB
 func InitDB() {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		"localhost",
+		"db",
 		"admin",
 		"password",
 		"avito_shop",

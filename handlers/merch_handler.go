@@ -16,13 +16,11 @@ type BuyRequest struct {
 var merchant = &models.User{UserID: 6, Login: "shop"}
 
 func BuyMerchHandler(w http.ResponseWriter, r *http.Request) {
-	// Проверить запрос
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	// Авторизовать пользователя
 	user, err := UserAuthz(w, r)
 	if err != nil {
 		return
@@ -46,9 +44,9 @@ func BuyMerchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = repository.AccountMerchToUser(user, merch)
+	err = repository.AccountMerchToUser(user, merch)
 	if err != nil {
-
+		fmt.Println(err)
 	}
 
 	w.Header().Set("Content-Type", "application/json")

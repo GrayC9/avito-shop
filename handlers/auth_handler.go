@@ -74,7 +74,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := utils.GenerateJWT(user.UserID)
+	token, err := utils.GenerateJWT(int(user.UserID))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(ErrorResponse{Error: "Ошибка генерации токена"})
@@ -82,7 +82,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokenRecord := models.Token{
-		UserID:    user.UserID,
+		UserID:    int(user.UserID),
 		Token:     token,
 		CreatedAt: time.Now(),
 		ExpiredAt: time.Now().Add(24 * time.Hour),
